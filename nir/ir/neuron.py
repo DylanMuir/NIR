@@ -51,6 +51,9 @@ class CubaLIF(NIRNode):
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
+        # if v_threshold is scalar, cast it to an array
+        if isinstance(self.v_threshold, (int, float)):
+            self.v_threshold = np.array([self.v_threshold])
         assert (
             self.tau_syn.shape
             == self.tau_mem.shape
@@ -60,8 +63,8 @@ class CubaLIF(NIRNode):
         ), "All parameters must have the same shape"
         # If w_in is a scalar, make it an array of same shape as v_threshold
         self.w_in = np.ones_like(self.v_threshold) * self.w_in
-        self.input_type = {"input": np.array([np.size(self.v_threshold)])}
-        self.output_type = {"output": np.array([np.size(self.v_threshold)])}
+        self.input_type = {"input": np.array([self.v_threshold.shape])}
+        self.output_type = {"output": np.array([self.v_threshold.shape])}
 
 
 @dataclass(eq=False)
@@ -80,6 +83,9 @@ class I(NIRNode):  # noqa: E742
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
+        # if r is scalar, cast it to an array
+        if isinstance(self.r, (int, float)):
+            self.r = np.array([self.r])
         self.input_type = {"input": np.array(self.r.shape)}
         self.output_type = {"output": np.array(self.r.shape)}
 
@@ -113,6 +119,9 @@ class IF(NIRNode):
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
+        # if v_threshold is scalar, cast it to an array
+        if isinstance(self.v_threshold, (int, float)):
+            self.v_threshold = np.array([self.v_threshold])
         assert (
             self.r.shape == self.v_threshold.shape
         ), "All parameters must have the same shape"
@@ -142,6 +151,9 @@ class LI(NIRNode):
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
+        # if v_leak is scalar, cast it to an array
+        if isinstance(self.v_leak, (int, float)):
+            self.v_leak = np.array([self.v_leak])
         assert (
             self.tau.shape == self.r.shape == self.v_leak.shape
         ), "All parameters must have the same shape"
@@ -184,6 +196,9 @@ class LIF(NIRNode):
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
+        # if v_threshold is scalar, cast it to an array
+        if isinstance(self.v_threshold, (int, float)):
+            self.v_threshold = np.array([self.v_threshold])
         assert (
             self.tau.shape
             == self.r.shape
